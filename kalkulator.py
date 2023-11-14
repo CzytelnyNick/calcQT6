@@ -17,10 +17,15 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
 )
 
-
+operation = ""
+val1 = 0
+val2 = 0
+suma = 0
 # Subclass QMainWindow to customize your application's main window
 class MainWindow(QWidget):
     def __init__(self):
+        global operation
+        global suma
         super().__init__()
         self.setWindowTitle("Kalkulator")
         vbox = QVBoxLayout()
@@ -51,18 +56,47 @@ class MainWindow(QWidget):
         def subtract():
             display = self.lcd.value()
             if display != 0:
-                self.lcd.display()
-            pass
+                val1 = int(self.lcd.value())
+                self.lcd.display(0)
+                operation = "-"
+            
         def add():
-            pass
+            display = self.lcd.value()
+            if display != 0:
+                val1 = int(self.lcd.value())
+                self.lcd.display(0)
+                operation = "+"
         def divide():
-            pass
+            display = self.lcd.value()
+            if display != 0:
+                val1 = int(self.lcd.value())
+                self.lcd.display(0)
+                operation = "/"
         def multipli():
-            pass
-        def sum():
-            pass
-
-
+            display = self.lcd.value()
+            if display == 0:
+                val1 = int(self.lcd.value())
+                self.lcd.display(0)
+                operation = "*"
+                return operation, val1
+        print(multipli()[0])
+        def summ(val1, operation):
+            global suma
+            display = self.lcd.value()
+            if display != 0:
+                val2 = int(self.lcd.value())
+                self.lcd.display(0)
+                match operation:
+                    case "-":
+                        suma = val1 - val2 
+                    case "+":
+                        suma = val1 + val2
+                    case "*":
+                        suma = val1 * val2
+                    case "/":
+                        suma = val1 / val2
+                print(suma,val1, val2, operation)
+        
         # def
         row1.addWidget(one)
         row1.addWidget(two)
@@ -90,11 +124,17 @@ class MainWindow(QWidget):
         eight.setFixedSize(100, 100)
         nine.setFixedSize(100, 100)
         vbox.addWidget(self.lcd)
+
         multi = QPushButton("*")
         plus = QPushButton("+")
         minus = QPushButton("-")
         div = QPushButton("/")
         sum = QPushButton("=")
+        multi.clicked.connect(multipli)
+        plus.clicked.connect(add)
+        minus.clicked.connect(subtract)
+        div.clicked.connect(divide)
+        sum.clicked.connect(summ)
         multi.setFixedSize(100, 100)
         plus.setFixedSize(100, 100)
         minus.setFixedSize(100, 100)
