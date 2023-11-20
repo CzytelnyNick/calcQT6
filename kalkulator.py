@@ -54,6 +54,7 @@ class MainWindow(QWidget):
 
                 self.lcd.display(f"{str(number)}")
         def subtract():
+            global val1, operation
             display = self.lcd.value()
             if display != 0:
                 val1 = int(self.lcd.value())
@@ -61,29 +62,34 @@ class MainWindow(QWidget):
                 operation = "-"
             
         def add():
+            global val1, operation
             display = self.lcd.value()
             if display != 0:
                 val1 = int(self.lcd.value())
                 self.lcd.display(0)
                 operation = "+"
         def divide():
+            global val1, operation
             display = self.lcd.value()
             if display != 0:
                 val1 = int(self.lcd.value())
                 self.lcd.display(0)
                 operation = "/"
         def multipli():
+            global val1, operation
             display = self.lcd.value()
-            if display == 0:
+
+            if display != 0:
                 val1 = int(self.lcd.value())
                 self.lcd.display(0)
                 operation = "*"
                 return operation, val1
-        print(multipli()[0])
-        def summ(val1, operation):
-            global suma
+        print()
+        def summ():
+            global suma, operation
             display = self.lcd.value()
             if display != 0:
+                print(operation)
                 val2 = int(self.lcd.value())
                 self.lcd.display(0)
                 match operation:
@@ -96,6 +102,7 @@ class MainWindow(QWidget):
                     case "/":
                         suma = val1 / val2
                 print(suma,val1, val2, operation)
+                self.lcd.display(suma)
         
         # def
         row1.addWidget(one)
