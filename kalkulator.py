@@ -36,6 +36,7 @@ class MainWindow(QWidget):
         row2 = QHBoxLayout()
         row3 = QHBoxLayout()
         row4 = QHBoxLayout()
+        row5 = QHBoxLayout()
         one = QPushButton("1")
         two = QPushButton("2")
         three = QPushButton("3")
@@ -84,7 +85,14 @@ class MainWindow(QWidget):
                 self.lcd.display(0)
                 operation = "*"
                 return operation, val1
-        print()
+        def minuss():
+            global val1
+            display = int(self.lcd.value())
+            if display != 0:
+                val1 = display
+                self.lcd.display(int(display * -1))
+                return operation, val1
+        # print()
         def summ():
             global suma, operation
             display = self.lcd.value()
@@ -131,12 +139,14 @@ class MainWindow(QWidget):
         eight.setFixedSize(100, 100)
         nine.setFixedSize(100, 100)
         vbox.addWidget(self.lcd)
+        minusss = QPushButton("-/+")
 
         multi = QPushButton("*")
         plus = QPushButton("+")
         minus = QPushButton("-")
         div = QPushButton("/")
         sum = QPushButton("=")
+        minusss.clicked.connect(minuss)
         multi.clicked.connect(multipli)
         plus.clicked.connect(add)
         minus.clicked.connect(subtract)
@@ -162,6 +172,8 @@ class MainWindow(QWidget):
         vbox.addLayout(row3)
         vbox.addStretch()
         vbox.addLayout(row4)
+        vbox.addStretch()
+        vbox.addLayout(row5)
         one.clicked.connect(lambda: write(1))
         two.clicked.connect(lambda: write(2))
         three.clicked.connect(lambda: write(3))
