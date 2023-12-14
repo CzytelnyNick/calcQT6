@@ -1,4 +1,5 @@
 import sys
+import math
 from PyQt6.QtGui import QDoubleValidator, QIntValidator, QRegularExpressionValidator
 from PyQt6.QtCore import QSize, Qt, QRegularExpression
 from PyQt6.QtWidgets import (
@@ -16,14 +17,17 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
 )
-
+import re
 operation = ""
 val1 = 0
+operation2 = ""
 val2 = 0
 suma = 0
+dotCheck = 0
 # Subclass QMainWindow to customize your application's main window
 class MainWindow(QWidget):
     def __init__(self):
+        
         global operation
         global suma
         super().__init__()
@@ -31,7 +35,7 @@ class MainWindow(QWidget):
         vbox = QVBoxLayout()
         self.lcd = QLCDNumber(self)
         self.lcd.setFixedSize(400, 100)
-        self.setFixedSize(400, 500)
+        self.setFixedSize(400, 600)
         row1 = QHBoxLayout()
         row2 = QHBoxLayout()
         row3 = QHBoxLayout()
@@ -47,72 +51,137 @@ class MainWindow(QWidget):
         # self.lcd.display(1)
         print(display)
         def write(number):
+            global dotCheck
+            global operation2
             display = self.lcd.value()
+            print(display)
             if display != 0.0:
-
-                self.lcd.display(f"{str(int(display)) + str(number)}")
+                if operation2 == "dot":
+                    if dotCheck == 0:
+                        self.lcd.display(f"{str(int(display))}.{str(number)}")
+                        dotCheck = 1
+                        print(dotCheck)
+                    else: 
+                         print(dotCheck)
+                         self.lcd.display(f"{str(float(display)) + str(number)}")
+                else:
+                    self.lcd.display(f"{str(int(display)) + str(number)}")
             else:
-
-                self.lcd.display(f"{str(number)}")
+                if operation2 == "dot":
+                    if dotCheck == 0:
+                        self.lcd.display(f"0.{str(number)}")
+                        dotCheck = 1
+                        print(dotCheck)
+                    else: 
+                         print(dotCheck)
+                         self.lcd.display(f"{str(float(display)) + str(number)}")
+                else:
+                     self.lcd.display(f"{str(number)}")
+            
         def subtract():
-            global val1, operation
+            global val1, operation, operation2
+            operation2 = ""
             display = self.lcd.value()
-            if display != 0:
-                val1 = int(self.lcd.value())
+            if display != 0 and operation == "":
+                val1 = float(self.lcd.value())
                 self.lcd.display(0)
                 operation = "-"
             
         def add():
-            global val1, operation
+            global val1, operation, operation2
             display = self.lcd.value()
             if display != 0:
-                val1 = int(self.lcd.value())
+                val1 = float(self.lcd.value())
                 self.lcd.display(0)
                 operation = "+"
+                operation2 = ""
         def divide():
-            global val1, operation
+            global val1, operation, operation2
             display = self.lcd.value()
+            operation2 = ""
             if display != 0:
-                val1 = int(self.lcd.value())
+                
+                val1 = float(self.lcd.value())
                 self.lcd.display(0)
                 operation = "/"
         def multipli():
-            global val1, operation
+            global val1, operation, operation2
             display = self.lcd.value()
 
             if display != 0:
-                val1 = int(self.lcd.value())
+                val1 = float(self.lcd.value())
                 self.lcd.display(0)
+                operation2 = ""
                 operation = "*"
                 return operation, val1
         def minuss():
-            global val1
-            display = int(self.lcd.value())
+            global val1, operation, operation2
+            display = float(self.lcd.value())
+            operation2 = ""
             if display != 0:
                 val1 = display
                 self.lcd.display(int(display * -1))
                 return operation, val1
         # print()
-        def summ():
-            global suma, operation
-            display = self.lcd.value()
+        def sqrtFunc():
+            global val1,operation2
+            display = float(self.lcd.value())
             if display != 0:
+                val1 = display
+                operation = "sqrt"
+                operation2 = ""
+                if self.lcd.value() >= 0:
+                            self.lcd.display(math.sqrt(self.lcd.value()))
+                else:
+                            self.lcd.display("Error") 
+                return operation, val1
+        def dotFunc():
+            global operation2
+            display = float(self.lcd.value())
+             
+            haveDot = str(int(self.lcd.value())).find(".")
+            print(haveDot, display)
+            val1 = f"{str(int(display))}."
+            operation2 = "dot"
+            print(val1)
+            self.lcd.display(val1)
+        def summ():
+            if self.lcd.value() != "Error":
+                 
+                global suma, operation,operation2
+                display = self.lcd.value()
+                
                 print(operation)
-                val2 = int(self.lcd.value())
+                val2 = float(self.lcd.value())
                 self.lcd.display(0)
                 match operation:
                     case "-":
-                        suma = val1 - val2 
+                            suma = val1 - val2 
                     case "+":
-                        suma = val1 + val2
+                            suma = val1 + val2
                     case "*":
-                        suma = val1 * val2
+                            suma = val1 * val2
                     case "/":
-                        suma = val1 / val2
+                            if val2 != 0:
+                                suma = val1 / val2
+                                print("aa")
+                            else: 
+                                 self.lcd.display("Error")
                 print(suma,val1, val2, operation)
                 self.lcd.display(suma)
+                operation=""
+                operation2=""
+            else:
+                 self.lcd.display(0)
         
         # def
+        sqrt = QPushButton("√")
+        dot = QPushButton(".")
+        sqrt.setFixedSize(140, 100)
+        dot.setFixedSize(140, 100)
+        
+        row5.addWidget(dot)
+        row5.addWidget(sqrt)
         row1.addWidget(one)
         row1.addWidget(two)
         row1.addWidget(three)
@@ -140,7 +209,7 @@ class MainWindow(QWidget):
         nine.setFixedSize(100, 100)
         vbox.addWidget(self.lcd)
         minusss = QPushButton("-/+")
-
+        minusss.setFixedSize(132,100)
         multi = QPushButton("*")
         plus = QPushButton("+")
         minus = QPushButton("-")
@@ -152,6 +221,8 @@ class MainWindow(QWidget):
         minus.clicked.connect(subtract)
         div.clicked.connect(divide)
         sum.clicked.connect(summ)
+        sqrt.clicked.connect(sqrtFunc)
+        dot.clicked.connect(dotFunc)
         multi.setFixedSize(100, 100)
         plus.setFixedSize(100, 100)
         minus.setFixedSize(100, 100)
@@ -164,6 +235,7 @@ class MainWindow(QWidget):
         row4.addWidget(div)
         row4.addWidget(zero)
         row4.addWidget(sum)
+        row5.addWidget(minusss)
         vbox.addStretch()
         vbox.addLayout(row1)
         vbox.addStretch()
