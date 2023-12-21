@@ -63,7 +63,7 @@ class MainWindow(QWidget):
                         print(dotCheck)
                     else: 
                          print(dotCheck)
-                         self.lcd.display(f"{str(float(display)) + str(number)}")
+                         self.lcd.display(f"{str((display)) + str(number)}")
                 else:
                     self.lcd.display(f"{str(int(display)) + str(number)}")
             else:
@@ -88,45 +88,45 @@ class MainWindow(QWidget):
                 operation = "-"
             
         def add():
-            global val1, operation, operation2
-            display = self.lcd.value()
-            if display != 0:
+                global val1, operation, operation2
+                display = self.lcd.value()
+            
                 val1 = float(self.lcd.value())
                 self.lcd.display(0)
                 operation = "+"
                 operation2 = ""
         def divide():
-            global val1, operation, operation2
-            display = self.lcd.value()
-            operation2 = ""
-            if display != 0:
+                global val1, operation, operation2
+                display = self.lcd.value()
+                operation2 = ""
+            
                 
                 val1 = float(self.lcd.value())
                 self.lcd.display(0)
                 operation = "/"
         def multipli():
-            global val1, operation, operation2
-            display = self.lcd.value()
+                global val1, operation, operation2
+                display = self.lcd.value()
 
-            if display != 0:
+            
                 val1 = float(self.lcd.value())
                 self.lcd.display(0)
                 operation2 = ""
                 operation = "*"
                 return operation, val1
         def minuss():
-            global val1, operation, operation2
-            display = float(self.lcd.value())
-            operation2 = ""
-            if display != 0:
+                global val1, operation, operation2
+                display = float(self.lcd.value())
+                operation2 = ""
+            
                 val1 = display
                 self.lcd.display(int(display * -1))
                 return operation, val1
         # print()
         def sqrtFunc():
-            global val1,operation2
-            display = float(self.lcd.value())
-            if display != 0:
+                global val1,operation2
+                display = float(self.lcd.value())
+            
                 val1 = display
                 operation = "sqrt"
                 operation2 = ""
@@ -136,15 +136,24 @@ class MainWindow(QWidget):
                             self.lcd.display("Error") 
                 return operation, val1
         def dotFunc():
-            global operation2
+            global operation2,dotCheck
             display = float(self.lcd.value())
-             
-            haveDot = str(int(self.lcd.value())).find(".")
-            print(haveDot, display)
+            dotCheck = 0
+            haveDot = (str(self.lcd.value())).find(".")
+            print(haveDot, str(self.lcd.value()))
             val1 = f"{str(int(display))}."
             operation2 = "dot"
             print(val1)
             self.lcd.display(val1)
+        def clearFunc():
+             global val1, val2, operation, operation2, suma
+             val1 = ""
+             val2 = ""
+             operation = ""
+             operation2 = ""
+             
+             self.lcd.display(0)
+             suma = self.lcd.value()
         def summ():
             if self.lcd.value() != "Error":
                  
@@ -162,11 +171,10 @@ class MainWindow(QWidget):
                     case "*":
                             suma = val1 * val2
                     case "/":
-                            if val2 != 0:
-                                suma = val1 / val2
-                                print("aa")
-                            else: 
-                                 self.lcd.display("Error")
+                        if not math.isnan(val2) and val2 != 0.0:
+                            suma = val1 / val2
+                        else:
+                            self.lcd.display("Error")
                 print(suma,val1, val2, operation)
                 self.lcd.display(suma)
                 operation=""
@@ -177,10 +185,13 @@ class MainWindow(QWidget):
         # def
         sqrt = QPushButton("√")
         dot = QPushButton(".")
+        clear = QPushButton("C")
+        clear.setFixedSize(140,100)
+        clear.clicked.connect(clearFunc)
         sqrt.setFixedSize(140, 100)
-        dot.setFixedSize(140, 100)
+        dot.setFixedSize(100, 100)
         
-        row5.addWidget(dot)
+        row5.addWidget(clear)
         row5.addWidget(sqrt)
         row1.addWidget(one)
         row1.addWidget(two)
@@ -209,7 +220,7 @@ class MainWindow(QWidget):
         nine.setFixedSize(100, 100)
         vbox.addWidget(self.lcd)
         minusss = QPushButton("-/+")
-        minusss.setFixedSize(132,100)
+        minusss.setFixedSize(100,100)
         multi = QPushButton("*")
         plus = QPushButton("+")
         minus = QPushButton("-")
@@ -226,16 +237,20 @@ class MainWindow(QWidget):
         multi.setFixedSize(100, 100)
         plus.setFixedSize(100, 100)
         minus.setFixedSize(100, 100)
-        div.setFixedSize(140, 100)
+        div.setFixedSize(100, 100)
         sum.setFixedSize(132, 100)
-        zero.setFixedSize(140, 100)
+        zero.setFixedSize(100, 100)
         row1.addWidget(multi)
         row2.addWidget(plus)
         row3.addWidget(minus)
         row4.addWidget(div)
         row4.addWidget(zero)
-        row4.addWidget(sum)
-        row5.addWidget(minusss)
+        row4.addWidget(dot)
+        row4.addWidget(minusss)
+        # row4.addWidget()
+        # row5.addWidget(minusss)
+        row5.addWidget(sum)
+        
         vbox.addStretch()
         vbox.addLayout(row1)
         vbox.addStretch()
